@@ -2,21 +2,20 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "@/modules/auth/hooks/useAuth";
 import AuthHeader from "../AuthHeader";
 import AppButton from "../AppButton";
 import Divider from "../Divider";
 
 
 export default function LoginForm() {
-    const { login } = useAuth();
-    const router = useRouter();
+    const { login, loading } = useAuth();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
     const handleLogin = () => {
-        router.push("/otp");
+        login(email, password);
     };
 
     return (
@@ -72,10 +71,10 @@ export default function LoginForm() {
                     <div className="mx-10 mt-6">
                         <AppButton
                             onClick={handleLogin}
-                            disabled={(!email || !password)}
-                            cursor={(email && password) ? "pointer" : "not-allowed"}
+                            disabled={(!email || !password || loading)}
+                            cursor={(email && password || loading) ? "pointer" : "not-allowed"}
                         >
-                            Sign In to Dashboard
+                            {loading ? "Singing in..." : "Sign In to Dashboard"}
                         </AppButton>
                     </div>
 
