@@ -5,7 +5,7 @@ export function middleware(req: NextRequest) {
     const token = req.cookies.get("token")?.value;
     const { pathname } = req.nextUrl;
 
-    const publicRoutes = ["/login", "/signup", "/otp", "/premium-access", "/subscription-required"];
+    const publicRoutes = ["/login", "/signup", "/otp", "/premium-access", "/subscription-required", "/forgot-password"];
 
     // 1. If the user is on a public route, let them through
     if (publicRoutes.includes(pathname)) {

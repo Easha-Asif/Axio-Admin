@@ -5,9 +5,6 @@ import {
     signInWithEmailAndPassword,
     signOut,
     getIdToken,
-    GoogleAuthProvider,
-    signInWithPopup,
-    deleteUser,
     sendPasswordResetEmail
 } from "firebase/auth";
 import { doc, getDoc, collection, addDoc, serverTimestamp, deleteDoc, setDoc, query, where, limit, getDocs } from "firebase/firestore";
@@ -38,8 +35,7 @@ export const authService = {
             // 2. Validate User in Firestore (Equivalent to __validateUserForLogin)
             const userDocRef = doc(db, "user", firebaseUser.uid);
             const userDoc = await getDoc(userDocRef);
-
-            console.log(userDoc);
+            console.log("userDocRef", userDocRef, "userDoc.data()", userDoc.data());
 
             if (!userDoc.exists()) {
                 await signOut(auth);
@@ -107,4 +103,58 @@ export const authService = {
     async logout() {
         await signOut(auth);
     },
+
+    async validateAdminEmail(email: string) {
+        const userEmail = email.trim().toLowerCase();
+        const usersRef = collection(db, "user");
+
+        // Query Firestore for this email
+        const q = query(usersRef, where("email", "==", userEmail), limit(1));
+        const querySnapshot = await getDocs(q);
+
+        if (querySnapshot.empty) {
+            throw new Error("No account found with this email address.");
+        }
+
+        const userData = querySnapshot.docs[0].data();
+
+        // STRICT CHECK: Block Viewers from using Web Admin Panel reset
+        if (userData.type !== "admin") {
+            throw new Error("Access denied. This panel is for Admin only.");
+        }
+
+        return true;
+    },
+
+    async forgotPassword(email: string) {
+        const userEmail = email.trim().toLowerCase();
+
+        const emailError = validateEmail(userEmail);
+        if (emailError) this.showError('Invalid email provided');
+
+        try {
+            // 1. Mirror your Flutter logic: Check if email exists in our DB
+            const isEmailRegistered = await this.validateAdminEmail(userEmail);
+            if (!isEmailRegistered) {
+                this.showError("No account found with this email address.");
+            }
+
+            // 2. Send Firebase Reset Email
+            await sendPasswordResetEmail(auth, userEmail);
+            toast.success("Your reset link has been sent to the email");
+            return "success";
+
+        } catch (error: any) {
+            // Mapping Firebase codes to your friendly Dart messages
+
+            switch (error.code) {
+                case 'auth/invalid-email':
+                    this.showError("Invalid email address.");
+                case 'auth/too-many-requests':
+                    this.showError("Too many requests. Try again later.");
+                default:
+                    this.showError(error.message || "Something went wrong.");
+            }
+        }
+    }
 }
