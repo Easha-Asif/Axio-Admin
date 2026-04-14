@@ -2,6 +2,7 @@ import { Manrope } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 // import "@/styles/global.css"; // <--- Add this line
 import "@/styles/global.css"
+// Nothing to show
 
 const manrope = Manrope({
   subsets: ["latin"],
