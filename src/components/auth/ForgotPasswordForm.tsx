@@ -23,8 +23,6 @@ export default function ForgotPasswordForm() {
     return (
         <div className="min-h-screen bg-[#141433] flex flex-col items-center justify-center p-6">
 
-
-
             <AuthHeader />
 
             <div className="relative flex flex-col items-center justify-center">

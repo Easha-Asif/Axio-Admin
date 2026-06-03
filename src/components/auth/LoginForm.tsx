@@ -79,7 +79,7 @@ export default function LoginForm() {
                             disabled={(!email || !password || loading)}
                             cursor={(email && password || loading) ? "pointer" : "not-allowed"}
                         >
-                            {loading ? "Singing in..." : "Sign In to Dashboard"}
+                            {loading ? "Signin in..." : "Sign In to Dashboard"}
                         </AppButton>
                     </div>
 

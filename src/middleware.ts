@@ -2,8 +2,22 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
-    const token = req.cookies.get("token")?.value;
     const { pathname } = req.nextUrl;
+
+    // 1. ALWAYS allow API routes (CRITICAL FIX)
+    if (pathname.startsWith("/api")) {
+        return NextResponse.next();
+    }
+
+    // 2. Allow Next.js internal files
+    if (
+        pathname.startsWith("/_next") ||
+        pathname.startsWith("/favicon.ico")
+    ) {
+        return NextResponse.next();
+    }
+
+    const token = req.cookies.get("token")?.value;
 
     const publicRoutes = ["/login", "/signup", "/otp", "/premium-access", "/subscription-required", "/forgot-password"];
 

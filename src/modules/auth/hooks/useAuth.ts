@@ -22,14 +22,14 @@ export const useAuth = () => {
 
             const userData = await authService.login({ email, password });
 
-            console.log(userData);
-
+            console.log("Came into login with success")
             // If we reach here, validation passed and session is created
             // Note: Service already handles blocking viewers and pending creators
             router.push("/dashboard");
             router.refresh();
             return true;
         } catch (err: any) {
+            console.log("Came into login with error")
             // Map Firebase errors to human-readable strings like _setError
             const message = err.code === 'auth/invalid-credential'
                 ? "Invalid email or password."

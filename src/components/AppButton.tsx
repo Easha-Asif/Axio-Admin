@@ -13,6 +13,7 @@ type AppButtonProps = {
     disabled?: boolean;
     cursor?: Cursor;
     className?: string;
+    loadingText?: string,
 };
 
 export default function AppButton({
@@ -24,6 +25,7 @@ export default function AppButton({
     disabled = false,
     cursor,
     className = "",
+    loadingText,
 }: AppButtonProps) {
     const baseStyles =
         "w-full font-medium py-3 rounded-[12px] flex items-center justify-center gap-2 transition-all shadow-lg disabled:opacity-60 disabled:cursor-not-allowed";
@@ -56,7 +58,7 @@ export default function AppButton({
             disabled={disabled || loading}
             className={`${baseStyles} ${variants[variant]} ${cursorClasses[resolvedCursor]} ${className}`}
         >
-            {loading ? "Loading..." : children}
+            {loading ? (loadingText || "Loading...") : children}
         </button>
     );
 }

@@ -9,6 +9,11 @@ const manrope = Manrope({
   weight: ["200", "300", "400", "500", "600", "700", "800"],
 });
 
+export const metadata = {
+  title: "Axio — Admin Panel",
+  description: "Create, monitor and control creators by Axio Admin.",
+};
+
 export default function RootLayout({ children }: any) {
   return (
     <html lang="en">

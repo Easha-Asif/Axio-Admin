@@ -5,7 +5,8 @@ import {
     signInWithEmailAndPassword,
     signOut,
     getIdToken,
-    sendPasswordResetEmail
+    sendPasswordResetEmail,
+    User
 } from "firebase/auth";
 import { doc, getDoc, collection, addDoc, serverTimestamp, deleteDoc, setDoc, query, where, limit, getDocs } from "firebase/firestore";
 import { toast } from "react-hot-toast";
@@ -50,19 +51,17 @@ export const authService = {
             }
 
             // 4. Create Session Record (Equivalent to sessionTable logic)
-            await addDoc(collection(db, "sessions"), {
-                uid: firebaseUser.uid,
-                ip: "admin_web_client",
-                createdAt: serverTimestamp(),
-                expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 Days
-                role: userData.type,
-            });
+            await this.addTokenToCookie(
+                firebaseUser,
+                userData.type
+            );
 
-            // 5. Token Handling
-            // Web handles persistence automatically, but you can force refresh here
-            await getIdToken(firebaseUser, true);
-            toast.success("Admin login successful");
-            return userData;
+            toast.success("User login successful");
+
+            return {
+                success: true,
+                userData,
+            };
         } catch (e) {
             let friendlyMessage = "An unexpected error occurred.";
 
@@ -97,6 +96,34 @@ export const authService = {
             }
             throw Error(friendlyMessage);
 
+        }
+    },
+
+    async addTokenToCookie(firebaseUser: User, type: string) {
+
+        // 4. Create Session Record (Equivalent to sessionTable logic)
+        await addDoc(collection(db, "sessions"), {
+            uid: firebaseUser.uid,
+            ip: "web_client",
+            createdAt: serverTimestamp(),
+            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 Days
+            role: type,
+        });
+        // 6. IMPORTANT: GET ID TOKEN
+        const token = await getIdToken(firebaseUser, true);
+
+        // 7. SET COOKIE VIA API (CRITICAL FIX)
+        const res = await fetch("/api/auth/session", {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ token }),
+        });
+
+        if (!res.ok) {
+            throw new Error("Failed to set session cookie");
         }
     },
 
