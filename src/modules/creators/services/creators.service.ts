@@ -110,7 +110,7 @@ async function hydrateCategories(creators: Creator[]): Promise<Creator[]> {
                         });
                     }
                 } catch (e) {
-                    console.error("Failed loading category:", categoryId, e);
+                    console.log("Failed loading category:", categoryId, e);
                 }
             })
         );

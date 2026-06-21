@@ -6,6 +6,9 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import StatCard from "@/components/admin/StatCard";
 import { useDashboard } from "@/modules/dashboard/useDashboard";
 import CreatorRow from "@/components/creator/creatorrow";
+import CreatorGrowthChart from "./components/CreatorGrowthChart";
+
+
 
 // Helpers
 function formatRevenue(amount: number): string {
@@ -57,6 +60,7 @@ export default function DashboardPage() {
         year: "numeric",
     })}`;
 
+
     return (
         <AdminLayout title="Admin Dashboard">
             {/* Header */}
@@ -89,6 +93,11 @@ export default function DashboardPage() {
                     label="Pending Approvals"
                     value={loading ? "—" : stats.pendingApprovals}
                 />
+            </div>
+
+            {/* Growth Chart */}
+            <div className="mb-6">
+                <CreatorGrowthChart creators={creators} />
             </div>
 
             {/* Table */}
