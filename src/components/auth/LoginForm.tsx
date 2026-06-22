@@ -9,7 +9,12 @@ import Divider from "../Divider";
 
 
 export default function LoginForm() {
+    const router = useRouter();
     const { login, loading } = useAuth();
+
+    const onForgotPassword = async () => {
+        router.push("/forgot-password");
+    }
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -74,12 +79,16 @@ export default function LoginForm() {
                             disabled={(!email || !password || loading)}
                             cursor={(email && password || loading) ? "pointer" : "not-allowed"}
                         >
-                            {loading ? "Singing in..." : "Sign In to Dashboard"}
+                            {loading ? "Signin in..." : "Sign In to Dashboard"}
                         </AppButton>
                     </div>
 
                     <div className="mx-10 mt-6 flex justify-between items-center">
-                        <button className="text-xs text-blue-500 hover:underline">Forgot password?</button>
+                        <button
+                            onClick={onForgotPassword}
+                            className="text-xs text-blue-500 hover:underline">
+                            Forgot password?
+                        </button>
                         <div className="flex items-center gap-2 text-xs text-gray-400">
                             <div className="font-medium">System Status:</div>
                             <div className="text-green-500 tracking-wider">Operational</div>

@@ -1,13 +1,18 @@
 import { Manrope } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 // import "@/styles/global.css"; // <--- Add this line
-import "@/styles/global.css"
+import "../styles/global.css";
 // Nothing to show
 
 const manrope = Manrope({
   subsets: ["latin"],
   weight: ["200", "300", "400", "500", "600", "700", "800"],
 });
+
+export const metadata = {
+  title: "Axio — Admin Panel",
+  description: "Create, monitor and control creators by Axio Admin.",
+};
 
 export default function RootLayout({ children }: any) {
   return (

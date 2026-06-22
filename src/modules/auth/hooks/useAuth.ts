@@ -22,14 +22,14 @@ export const useAuth = () => {
 
             const userData = await authService.login({ email, password });
 
-            console.log(userData);
-
+            console.log("Came into login with success")
             // If we reach here, validation passed and session is created
             // Note: Service already handles blocking viewers and pending creators
-            router.push("/premium-access");
+            router.push("/dashboard");
             router.refresh();
             return true;
         } catch (err: any) {
+            console.log("Came into login with error")
             // Map Firebase errors to human-readable strings like _setError
             const message = err.code === 'auth/invalid-credential'
                 ? "Invalid email or password."
@@ -58,9 +58,26 @@ export const useAuth = () => {
         }
     };
 
+    const handleForgotPassword = async (email: string) => {
+        setError(null);
+        setLoading(true);
+        try {
+            const success = await authService.forgotPassword(email);
+            if (success === "success") {
+                router.push("/login");
+                router.refresh();
+            }
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return {
         login,
         logout,
+        handleForgotPassword,
         loading,
         error,
     };
