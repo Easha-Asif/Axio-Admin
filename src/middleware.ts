@@ -24,7 +24,7 @@ export function middleware(req: NextRequest) {
     const publicRoutes = ["/login", "/signup", "/otp", "/premium-access", "/subscription-required", "/forgot-password"];
 
     // 1. If the user is on a public route, let them through
-    if (publicRoutes.includes(pathname)) {
+    if (publicRoutes.includes(pathname) || pathname.startsWith("/legal")) {
         return NextResponse.next();
     }
 
